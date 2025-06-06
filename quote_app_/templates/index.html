@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+{% if username %}
+    <p style="text-align:center; color:#4EA685; font-size:1.2em; margin-bottom:1em;">
+        Welcome, <b>{{ username }}</b>!
+    </p>
+{% endif %}
+<h1 class="quote-title"><span class="icon">💡</span> Quote of the Day <span class="icon">✨</span></h1>
+<div class="quote-section">
+    {% if quote %}
+    <p><i>{{ quote[1] }}</i> — <b>{{ quote[2] }}</b></p>
+    {% endif %}
+
+    <form method="POST" action="/search">
+        <input name="author" placeholder="Search by author">
+        <button>Search</button>
+    </form>
+</div>
+
+{% if message %}
+    <p style="color: #e53935; text-align: center; font-size: 1.1em; margin-top: 2em;">{{ message }}</p>
+{% endif %}
+
+{% if results is defined and results and results|length > 0 %}
+    <h2>Search Results:</h2>
+    {% for r in results %}
+        <div class="search-result-quote">
+            {{ r[1] }}
+            <span class="search-result-author">— {{ r[2] }}</span>
+        </div>
+    {% endfor %}
+{% endif %}
+{% endblock %}
+
+<head>
+    <!-- ...existing code... -->
+    <style>
+        body {
+            background-image: url("{{ url_for('static', filename='background.jpg') }}");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+    </style>
+    <!-- ...existing code... -->
+</head>

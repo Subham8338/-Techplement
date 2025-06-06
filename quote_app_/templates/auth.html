@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% block content %}
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+<style>
+:root {
+    --primary-color: #4EA685;
+    --secondary-color: #57B894;
+    --white: #fff;
+    --gray: #efefef;
+    --gray-2: #757575;
+}
+body, html { height: 100vh; margin: 0; padding: 0; }
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(-45deg, var(--primary-color), var(--secondary-color));
+}
+.auth-card {
+    background: var(--white);
+    border-radius: 1.5rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+    padding: 2rem 2.5rem;
+    width: 350px;
+    max-width: 95vw;
+    text-align: center;
+}
+.auth-card h2 {
+    color: var(--primary-color);
+    margin-bottom: 1.2rem;
+}
+.input-group {
+    position: relative;
+    margin: 1rem 0;
+}
+.input-group i {
+    position: absolute;
+    top: 50%;
+    left: 1rem;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    color: var(--gray-2);
+}
+.input-group input {
+    width: 100%;
+    padding: 0.8rem 2.5rem;
+    font-size: 1rem;
+    background-color: var(--gray);
+    border-radius: .5rem;
+    border: 1px solid var(--white);
+    outline: none;
+}
+.input-group input:focus { border: 1.5px solid var(--primary-color); }
+.auth-card button {
+    width: 100%;
+    padding: .7rem 0;
+    border-radius: .5rem;
+    border: none;
+    background-color: var(--primary-color);
+    color: var(--white);
+    font-size: 1.1rem;
+    margin-top: 0.5rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.auth-card button:hover { background: #388e6c; }
+.auth-card .switch-link {
+    color: var(--secondary-color);
+    cursor: pointer;
+    font-weight: bold;
+    margin-left: 5px;
+}
+.auth-card .error-msg {
+    color: #e53935;
+    margin-bottom: 0.7rem;
+    font-size: 0.95em;
+}
+</style>
+<div class="auth-container">
+    <div class="auth-card">
+        <h2 id="form-title">{{ 'Sign Up' if show_signup else 'Sign In' }}</h2>
+        <!-- Sign Up Form -->
+        <form id="signup-form" method="POST" action="/register" style="display: {{ 'block' if show_signup else 'none' }};">
+            {% if register_error %}
+                <div class="error-msg">{{ register_error }}</div>
+            {% endif %}
+            <div class="input-group">
+                <i class='bx bxs-user'></i>
+                <input type="text" name="username" placeholder="Username" required>
+            </div>
+            <div class="input-group">
+                <i class='bx bx-mail-send'></i>
+                <input type="email" name="email" placeholder="Email" required>
+            </div>
+            <div class="input-group">
+                <i class='bx bxs-lock-alt'></i>
+                <input type="password" name="password" placeholder="Password" required>
+            </div>
+            <div class="input-group">
+                <i class='bx bxs-lock-alt'></i>
+                <input type="password" name="confirm_password" placeholder="Confirm password" required>
+            </div>
+            <button type="submit">Sign up</button>
+            <p style="margin-top:1rem;">
+                Already have an account?
+                <span class="switch-link" onclick="showSignIn()">Sign in here</span>
+            </p>
+        </form>
+        <!-- Sign In Form -->
+        <form id="signin-form" method="POST" action="/login" style="display: {{ 'none' if show_signup else 'block' }};">
+            {% if login_error %}
+                <div class="error-msg">{{ login_error }}</div>
+            {% endif %}
+            <div class="input-group">
+                <i class='bx bxs-user'></i>
+                <input type="text" name="username" placeholder="Username" required>
+            </div>
+            <div class="input-group">
+                <i class='bx bxs-lock-alt'></i>
+                <input type="password" name="password" placeholder="Password" required>
+            </div>
+            <button type="submit">Sign in</button>
+            <p style="margin-top:1rem;">
+                Don't have an account?
+                <span class="switch-link" onclick="showSignUp()">Sign up here</span>
+            </p>
+        </form>
+    </div>
+</div>
+<script>
+function showSignUp() {
+    document.getElementById('signup-form').style.display = 'block';
+    document.getElementById('signin-form').style.display = 'none';
+    document.getElementById('form-title').innerText = 'Sign Up';
+}
+function showSignIn() {
+    document.getElementById('signup-form').style.display = 'none';
+    document.getElementById('signin-form').style.display = 'block';
+    document.getElementById('form-title').innerText = 'Sign In';
+}
+// Auto-show correct form on load
+window.onload = function() {
+    // Jinja will render only one of these lines
+    {% if show_signup %}
+    showSignUp();
+    {% else %}
+    showSignIn();
+    {% endif %}
+};
+</script>
+{% endblock %}
