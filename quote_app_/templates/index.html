@@ -5,10 +5,11 @@
         Welcome, <b>{{ username }}</b>!
     </p>
 {% endif %}
+
 <h1 class="quote-title"><span class="icon">💡</span> Quote of the Day <span class="icon">✨</span></h1>
 <div class="quote-section">
     {% if quote %}
-    <p><i>{{ quote[1] }}</i> — <b>{{ quote[2] }}</b></p>
+        <p><i>{{ quote[1] }}</i> — <b>{{ quote[2] }}</b></p>
     {% endif %}
 
     <form method="POST" action="/search">
@@ -23,17 +24,18 @@
 
 {% if results is defined and results and results|length > 0 %}
     <h2>Search Results:</h2>
-    {% for r in results %}
-        <div class="search-result-quote">
-            {{ r[1] }}
-            <span class="search-result-author">— {{ r[2] }}</span>
-        </div>
-    {% endfor %}
+    <div class="search-results">
+        {% for r in results %}
+            <div class="search-result-quote">
+                <p><i>{{ r[1] }}</i></p>
+                <span class="search-result-author">— <b>{{ r[2] }}</b></span>
+            </div>
+        {% endfor %}
+    </div>
 {% endif %}
 {% endblock %}
 
 <head>
-    <!-- ...existing code... -->
     <style>
         body {
             background-image: url("{{ url_for('static', filename='background.jpg') }}");
@@ -42,5 +44,4 @@
             background-attachment: fixed;
         }
     </style>
-    <!-- ...existing code... -->
 </head>

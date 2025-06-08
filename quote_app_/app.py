@@ -1,13 +1,23 @@
 from flask import Flask, render_template, request, redirect, session, url_for
+import requests
+import os
+from dotenv import load_dotenv
 import sqlite3
 import random
+
+# Load environment variables
+load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = 'any-secret-key'
 app.config['SESSION_CLEARED'] = False
 
+# Use absolute path for the database
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, "database.db")
+
 def get_db():
-    return sqlite3.connect('database.db')
+    return sqlite3.connect(DB_PATH)
 
 @app.before_request
 def clear_session_on_start():
@@ -32,7 +42,8 @@ def search():
         return render_template('index.html', quote=None, message="Please Enter Author's name.", results=None, username=session.get('username'))
     con = get_db()
     cur = con.cursor()
-    cur.execute("SELECT * FROM quotes WHERE author LIKE ?", ('%' + author + '%',))
+    # Case-insensitive search for author
+    cur.execute("SELECT * FROM quotes WHERE LOWER(author) LIKE ?", ('%' + author.lower() + '%',))
     results = cur.fetchall()
     if not results:
         message = f'No quotes found for author \"{author}\". Please try another name.'
@@ -79,6 +90,7 @@ def register():
 def logout():
     session.pop('username', None)
     return redirect('/')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
